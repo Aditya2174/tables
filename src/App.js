@@ -10,40 +10,23 @@ import { GoogleLogin } from '@react-oauth/google';
 function App() {
   console.log("hello");
   const [user, setLoginUser] = useState({});
-  const [x, setX] = useState(0); // Use state to control the conditional rendering
+  // const [x, setX] = useState(0); // Use state to control the conditional rendering
 
   return (
     <div className="App">
       <Router className="hi">
         <Routes>
-          {x === 0 && (
-            <Route path="/" element={<Login setLoginUser={setLoginUser} />} />
-          )}
-          {x === 1 && (
-            <Route path="/" element={<Homepage setLoginUser={setLoginUser} />}
-
-            />)}
+          <Route path="/" element=
+          {
+            user && user._id ? <Homepage setLoginUser={setLoginUser} /> : <Login setLoginUser={setLoginUser} />
+          }
+          />
+          <Route path="/h" element={<Homepage setLoginUser={setLoginUser} />} />
           <Route path="/register" element={<Register />} />
         </Routes>
       </Router>
 
-      <GoogleOAuthProvider clientId="986082076902-n1r1qdrd2bec8p0sefdutur0rtarcp0b.apps.googleusercontent.com">
-        <div className="signIn">
-          <h1 className='or'> OR </h1>
-          <GoogleLogin
-            onSuccess={credentialResponse => {
-              setX(1); // Update the value of x when login is successful
-              console.log(credentialResponse);
-              console.log(x);
-
-            }}
-            onError={() => {
-              console.log('Login Failed');
-            }}
-            useOneTap
-          />
-        </div>
-      </GoogleOAuthProvider>
+      
     </div>
   );
 }
