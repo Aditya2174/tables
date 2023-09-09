@@ -32,7 +32,7 @@ const Login = ({ setLoginUser}) => {
     // Handle the error, e.g., show an error message to the user
   });
     }
-
+    console.log(user);
     return (
         <div className="login">
             <h1>Login</h1>

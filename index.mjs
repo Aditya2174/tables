@@ -15,7 +15,7 @@ async function connectToDatabase() {
             useUnifiedTopology: true,
         });
         console.log("Connected to MongoDB");
-        const port = 9002; // Replace with your port number
+        const port = 9002; 
         app.listen(port, () => {
             console.log(`Server is listening on port ${port}`);
         });
@@ -89,8 +89,8 @@ app.post("/register", async (req, res) => {
 
 connectToDatabase()
     .then(() => {
-        app.listen(3000, () => {
-            console.log("Server is running on port 3000");
+        app.listen(3001, () => {
+            console.log("Server is running on port 3001");
         });
     })
     .catch((error) => {
