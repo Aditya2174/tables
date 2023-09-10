@@ -26,12 +26,14 @@ const Login = ({ setLoginUser }) => {
     const login = () => {
         axios.post("http://localhost:9002/login", user)
             .then((res) => {
+                console.log(res);
                 alert(res.data.message);
                 setLoginUser(res.data.user);
                 history("/h");
             })
             .catch((error) => {
                 console.error("Axios error:", error);
+                alert(error.response.data.message)
                 // Handle the error, e.g., show an error message to the user
             });
     }
@@ -46,25 +48,38 @@ const Login = ({ setLoginUser }) => {
             <div>or</div>
             <div className="button" onClick={() => history("/register")}>Register</div>
             <div className="google-button-container">
-            <GoogleOAuthProvider className="google" clientId="986082076902-n1r1qdrd2bec8p0sefdutur0rtarcp0b.apps.googleusercontent.com">
-                <div className="signIn">
-                    <h1 className='or'> OR </h1>
-                    <GoogleLogin 
-                        onSuccess={credentialResponse => {
-                            // setX(1); // Update the value of x when login is successful
-                            const data = jwt_decode(credentialResponse.credential)
-                            // setLoginUser(data.name)
-                            // console.log(data);
-                            // console.log(user);
-                            history("/h")
-                        }}
-                        onError={() => {
-                            console.log('Login Failed');
-                        }}
-                        useOneTap
-                    />
-                </div>
-            </GoogleOAuthProvider>
+                <GoogleOAuthProvider className="google" clientId="986082076902-n1r1qdrd2bec8p0sefdutur0rtarcp0b.apps.googleusercontent.com">
+                    <div className="signIn">
+                        <h1 className='or'> OR </h1>
+                        <GoogleLogin
+                            onSuccess={credentialResponse => {
+                                const data = jwt_decode(credentialResponse.credential)
+                                // setLoginUser(data.name)
+                                axios
+                                    .post("http://localhost:9002/store-user", data)
+                                    .then((res) => {
+                                        // Handle the response as needed (e.g., show a success message)
+                                        console.log("User data stored successfully:", res.data.message);
+
+                                        // Redirect the user to the desired page
+                                        history("/h");
+                                    })
+                                    .catch((error) => {
+                                        console.error("Axios error:", error);
+
+                                        // Handle the error, e.g., show an error message to the user
+                                    });
+                                console.log(data);
+                                console.log(user);
+                                history("/h")
+                            }}
+                            onError={() => {
+                                console.log('Login Failed');
+                            }}
+                            useOneTap
+                        />
+                    </div>
+                </GoogleOAuthProvider>
             </div>
         </div>
     )

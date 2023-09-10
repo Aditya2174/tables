@@ -15,7 +15,7 @@ async function connectToDatabase() {
             useUnifiedTopology: true,
         });
         console.log("Connected to MongoDB");
-        const port = 9002; 
+        const port = 9002;
         app.listen(port, () => {
             console.log(`Server is listening on port ${port}`);
         });
@@ -43,7 +43,7 @@ app.post("/login", async (req, res) => {
 
         if (!user) {
             // User not registered
-            return res.status(400).json({ message: "User not registered" });
+            return res.status(401).json({ message: "User not registered" });
         }
 
         // Check if the password matches
@@ -57,19 +57,46 @@ app.post("/login", async (req, res) => {
         res.status(500).json({ message: "Internal server error" });
     }
 });
+app.post("/store-user", async (req, res) => {
+    // Extract user data from the request body
+    try {
+        const { email, name } = req.body;
 
+        const existingUser = await User.findOne({ email });
+        // Create a new user document and save it to the database
+        if (existingUser) {
+            // User already registered
+            return res.status(201).json({ message: "Success" });
+        }
+
+        // Create a new user instance
+        const newUser = new User({
+            name,
+            email,
+        });
+
+        // Save the new user to the database
+        await newUser.save();
+
+        res.status(201).json({ message: "Successfully Registered , No need to login" });
+    } catch (error) {
+        console.error("Registration error:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
 app.post("/register", async (req, res) => {
     try {
         const { name, email, password } = req.body;
 
-        // Check if the user with the given email already exists
+        // Check if the user with the given email already exists 
         const existingUser = await User.findOne({ email });
 
         if (existingUser) {
-            // User already registered
-            return res.status(400).json({ message: "User already registered" });
+            // User already registered 
+            console.log(existingUser);
+            return res.status(201).json({ message: "User already registered" });
         }
-
+        
         // Create a new user instance
         const newUser = new User({
             name,
